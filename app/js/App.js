@@ -457,16 +457,19 @@ angular.module('App', ['Settings', 'Services', 'GameLogic', 'Drawing', 'ngMateri
 		var message = JSON.parse(evt.data);
 		
 		if (message.type === "TOPIC-MEMBERS") {
-			showSimpleToast("Welcome! You are currently guest number " + message.data.members.length + " in this room.");
+			showSimpleToast("Welcome! You are currently player number " + message.data.members.length + " in this room.");
+			$scope.playersCount = message.data.members.length;
 		}
 		else if (message.type === "MEMBER-JOINED") {
 			showSimpleToast("New player has joined: " + message.data.member);
+			$scope.playersCount++;
 		}
 		else if (message.type === "MEMBER-LEFT") {
 			showSimpleToast("One player has left: " + message.data.member);
 			$scope.$apply(function() {
 				delete $scope.statuses[message.data.member];
 			});
+			$scope.playersCount--;
 		}
 		else if (message.type === "SCORES") {
 			showSimpleToast(message.from + " has finished game with score: " + message.data.points)
