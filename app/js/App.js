@@ -6,6 +6,12 @@ angular.module('App', ['Settings', 'Services', 'GameLogic', 'Drawing', 'ngMateri
 .controller('GameController', function($scope, $mdToast, $window, BlockFactory, Shapes, Colors, FIELD_UNIT_SIZE, FIELD_SIZE, DrawService, UtilService, PointsService) {
 	var chatLog = document.getElementById("chatLog")
 	
+	var audioPath = "assets/";
+    var manifest = [
+        {id:"Drop", src:"drop.mp3"}
+    ];
+    createjs.Sound.registerManifest(manifest, audioPath);
+	
 	var KEY = {
         LEFT: 37,
         RIGHT: 39,
@@ -565,12 +571,6 @@ angular.module('App', ['Settings', 'Services', 'GameLogic', 'Drawing', 'ngMateri
 	/**************************************************
 	** OTHER STUFF:
 	**************************************************/
-	
-    var audioPath = "assets/";
-    var manifest = [
-        {id:"Drop", src:"drop.mp3"}
-    ];
-    createjs.Sound.registerManifest(manifest, audioPath);
 	
 	function timeNow(){
 		var now= new Date(), 
