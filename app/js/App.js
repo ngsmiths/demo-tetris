@@ -436,7 +436,7 @@ angular.module('App', ['Settings', 'Services', 'GameLogic', 'Drawing', 'ngMateri
 		if (!$scope.chatMessage) {
             return;
         }
-        sendMessage($scope.chatMessage)
+        sendChatMessage($scope.chatMessage)
 		document.getElementById("chatText").value = "";
     };
 
@@ -502,70 +502,29 @@ angular.module('App', ['Settings', 'Services', 'GameLogic', 'Drawing', 'ngMateri
 	function onError(evt)
 	{
 		console.log("Disconnected from socket server due to error");
-	};
+	}
 	
 	function joinTopic() {
-		var message = { };
-		message.type = "JOIN-TOPIC";
-		message.to = "demo-tetris-topic";
-		message.data = { };
-		
-		// Subscribe for presence:
-		message.data.watch = true;
-		
-		// Send message:
-		socket.send(JSON.stringify(message));
-	};
+		socket.send(JSON.stringify({type: "JOIN-TOPIC", to: "demo-tetris-topic", data: {watch: true}}))
+	}
 	
 	function sendStatus(points, level, rowCount, field) {
-		var message = { };
-		message.type = "STATUS";
-		message.to = "tc://demo-tetris-topic"; // Send to the topic
-		
-		// Set data:
-		message.data = { };
-		message.data.points = points;
-		message.data.level = level;
-		message.data.rowCount = rowCount;
-		message.data.field = field;
-		
-		// Send message:
-		socket.send(JSON.stringify(message));
-	};
+		socket.send(JSON.stringify({type: "STATUS", to: "tc://demo-tetris-topic", data: {points: points, level: level, rowCount: rowCount, field: field}}))
+	}
 	
 	function sendScores(points, level, rowCount) {
-		var message = { };
-		message.type = "SCORES";
-		message.to = "tc://demo-tetris-topic"; // Send to the topic
-		
-		// Set data:
-		message.data = { };
-		message.data.points = points;
-		message.data.level = level;
-		message.data.rowCount = rowCount;
-		
-		// Send message:
-		socket.send(JSON.stringify(message));
-	};
+		socket.send(JSON.stringify({type: "SCORES", to: "tc://demo-tetris-topic", data: {points: points, level: level, rowCount: rowCount}}))
+	}
 	
-	function sendMessage(textMessage) {
-		var message = { };
-		message.type = "MESSAGE";
-		message.data = { };
-		message.data.message = textMessage;
-		
+	function sendChatMessage(textMessage) {
 		// Send message to the topic members:
-		message.to = "tc://demo-tetris-topic";
-		socket.send(JSON.stringify(message));
+		socket.send(JSON.stringify({type: "MESSAGE", to: "tc://demo-tetris-topic", data: {message: textMessage}}))
 		// Now send one copy to myself:
-		message.to = $scope.inputName;
-		socket.send(JSON.stringify(message));
-	};
+		socket.send(JSON.stringify({type: "MESSAGE", to: $scope.inputName, data: {message: textMessage}}))
+	}
 	
 	function sendPing() {
-		var message = {};
-		message.type = "PING";
-		socket.send(JSON.stringify(message));
+		socket.send(JSON.stringify({type: "PING"}));
 	}
 	
 	/**************************************************
@@ -586,7 +545,7 @@ angular.module('App', ['Settings', 'Services', 'GameLogic', 'Drawing', 'ngMateri
 		if(m<10) m= '0'+m;
 		if(s<10) s= '0'+s;
 		return now.toLocaleDateString()+ ' ' + h + ':' + m + ':' + s + ' ' + ampm;
-	};
+	}
 	
 	function showSimpleToast(message) {
 		$mdToast.show(
@@ -595,9 +554,9 @@ angular.module('App', ['Settings', 'Services', 'GameLogic', 'Drawing', 'ngMateri
 			.hideDelay(5000)
 			.position("bottom left right")
 		);
-	};
+	}
 	
 	function executeAsync(func) {
 		setTimeout(func, 30000);
-	};
+	}
 });
